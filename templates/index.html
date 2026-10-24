@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b0d13">
+  <meta name="app-token" content="{{ token }}">
+  <title>{{ app_name }} — загрузка плейлистов</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ version }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}?v={{ version }}"></script>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10.6 13.4a4.5 4.5 0 0 0 6.4 0l2.3-2.3a4.5 4.5 0 0 0-6.4-6.4l-1.3 1.3"/><path d="M13.4 10.6a4.5 4.5 0 0 0-6.4 0l-2.3 2.3a4.5 4.5 0 0 0 6.4 6.4l1.3-1.3"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="7" y="4" width="10" height="4" rx="1.4"/><path d="M9 4H6.8A1.8 1.8 0 0 0 5 5.8v13.4A1.8 1.8 0 0 0 6.8 21h10.4a1.8 1.8 0 0 0 1.8-1.8V5.8A1.8 1.8 0 0 0 17.2 4H15"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.12.37.4.68.78.87.22.11.47.17.73.17H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1Z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h3.1c.7 0 1.36.3 1.83.83l.9 1.02c.46.53 1.13.83 1.82.83h5.35A2.5 2.5 0 0 1 21 10.18V17.5A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5Z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.5 6"/><path d="M20 4v7h-7"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.2c0 4.6 3.1 8.4 7.5 9.8 4.4-1.4 7.5-5.2 7.5-9.8V6Z"/><path d="m8.8 12.2 2.1 2.1 4.3-4.3"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20 13.2 13.2 20a2 2 0 0 1-2.8 0L4 13.6V4h9.6l6.4 6.4a2 2 0 0 1 0 2.8Z"/><circle cx="8.5" cy="8.5" r="1.2"/></symbol>
+    <symbol id="i-resume" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="m10 9 5 3-5 3Z"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="m20 4-9 9"/><path d="M19 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 4 18.5v-12A1.5 1.5 0 0 1 5.5 5H10"/></symbol>
+  </svg>
+
+  <div class="bg-glow bg-glow-a" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-b" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="PLDL — на главную">
+      <span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="brand-text"><strong>PLDL</strong><small>playlist downloader</small></span>
+    </a>
+    <div class="topbar-actions">
+      <button class="status-chip" id="ffmpeg-chip" type="button" title="Проверить FFmpeg в настройках">
+        <span class="status-dot"></span><span id="ffmpeg-chip-text">FFmpeg: проверка…</span>
+      </button>
+      <button class="icon-btn" id="settings-btn" type="button" title="Настройки" aria-label="Настройки">
+        <svg><use href="#i-settings"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-kicker"><svg><use href="#i-sparkle"/></svg> локально, без облака и аккаунтов</div>
+      <h1>Вся музыка из плейлиста —<br><span class="accent">в одну папку</span></h1>
+      <p class="hero-sub">Вставьте ссылку из Яндекс Музыки, SoundCloud, Spotify, VK, Deezer или YouTube. Приложение разберёт треки и сохранит их с тегами и обложками.</p>
+    </section>
+
+    <section class="card input-card">
+      <form id="resolve-form" autocomplete="off" novalidate>
+        <div class="url-row">
+          <div class="input-wrap">
+            <svg class="input-icon"><use href="#i-link"/></svg>
+            <input id="url-input" name="url" type="text" inputmode="url" spellcheck="false"
+                   placeholder="https://music.yandex.ru/users/…/playlists/…"
+                   aria-label="Ссылка на плейлист, альбом, трек или профиль">
+            <button type="button" class="mini-btn" id="paste-btn" title="Вставить из буфера обмена">
+              <svg><use href="#i-clipboard"/></svg><span>Вставить</span>
+            </button>
+          </div>
+          <button class="btn btn-primary resolve-btn" id="resolve-btn" type="submit">
+            <span class="btn-label">Разобрать</span>
+            <span class="spinner hidden" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="hint-row">
+          <span class="hint-label">Поддерживаются</span>
+          <span class="tag tag-yandex">Яндекс Музыка</span>
+          <span class="tag tag-sc">SoundCloud</span>
+          <span class="tag tag-spotify">Spotify</span>
+          <span class="tag tag-vk">VK Музыка</span>
+          <span class="tag tag-deezer">Deezer</span>
+          <span class="tag tag-yt">YouTube</span>
+          <span class="tag tag-more">и другие сайты</span>
+        </div>
+      </form>
+    </section>
+
+    <div id="error-box" class="alert alert-error hidden" role="alert">
+      <svg class="alert-icon"><use href="#i-alert"/></svg>
+      <div class="alert-body">
+        <strong id="error-message"></strong>
+        <p id="error-hint" class="hidden"></p>
+      </div>
+      <button type="button" class="icon-btn small" id="error-close" aria-label="Закрыть">
+        <svg><use href="#i-x"/></svg>
+      </button>
+    </div>
+
+    <section id="resolve-loading" class="card loading-card hidden" aria-live="polite">
+      <div class="loading-cover skeleton"></div>
+      <div class="loading-lines">
+        <div class="skeleton line w40"></div>
+        <div class="skeleton line w70"></div>
+        <div class="skeleton line w55"></div>
+        <div class="loading-status"><span class="spinner small"></span> Получаю список треков…</div>
+      </div>
+    </section>
+
+    <section id="preview" class="card preview hidden" aria-live="polite">
+      <div class="preview-head">
+        <div class="cover">
+          <img id="preview-cover" alt="" referrerpolicy="no-referrer">
+          <div class="cover-fallback" id="preview-cover-fallback" aria-hidden="true"><svg><use href="#i-music"/></svg></div>
+        </div>
+        <div class="preview-info">
+          <div class="badges">
+            <span class="badge" id="preview-platform"></span>
+            <span class="badge badge-muted" id="preview-kind"></span>
+            <span class="badge badge-mode" id="preview-mode"></span>
+          </div>
+          <h2 id="preview-title"></h2>
+          <p class="preview-author" id="preview-author"></p>
+          <p class="preview-meta" id="preview-meta"></p>
+          <div id="preview-warnings" class="warnings"></div>
+        </div>
+        <div class="preview-side">
+          <div class="count-big"><strong id="preview-count">0</strong><span id="preview-count-label">треков</span></div>
+          <button type="button" class="mini-btn" id="open-output-btn">
+            <svg><use href="#i-folder"/></svg><span>Открыть папку</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="options-bar">
+        <label class="field compact">
+          <span>Формат и качество</span>
+          <select id="preview-quality"></select>
+        </label>
+        <label class="check-field">
+          <input type="checkbox" id="preview-folder">
+          <span>Отдельная папка</span>
+        </label>
+        <label class="check-field">
+          <input type="checkbox" id="preview-index">
+          <span>Нумерация</span>
+        </label>
+        <div class="options-note" id="preview-folder-path"></div>
+      </div>
+
+      <div class="track-toolbar">
+        <label class="check-field select-all">
+          <input type="checkbox" id="select-all" checked>
+          <span>Выбрать все</span>
+        </label>
+        <span class="selection-count" id="selection-count">Выбрано: 0</span>
+        <label class="filter-wrap" id="filter-wrap">
+          <svg><use href="#i-search"/></svg>
+          <input type="search" id="track-filter" placeholder="Фильтр по названию или исполнителю" autocomplete="off">
+        </label>
+        <button type="button" class="mini-btn" id="collapse-tracks">
+          <svg class="chevron"><use href="#i-chevron"/></svg><span>Свернуть список</span>
+        </button>
+      </div>
+
+      <div id="track-list" class="track-list"></div>
+
+      <div class="preview-footer">
+        <div class="footer-note" id="preview-footer-note"></div>
+        <div class="footer-actions">
+          <button type="button" class="btn btn-ghost" id="download-selected">
+            <svg><use href="#i-download"/></svg><span>Скачать выбранное</span>
+          </button>
+          <button type="button" class="btn btn-primary" id="download-all">
+            <svg><use href="#i-download"/></svg><span>Скачать всё</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="jobs-section" class="jobs-section hidden">
+      <div class="section-head">
+        <h2>Загрузки</h2>
+        <button type="button" class="mini-btn" id="clear-finished">Убрать завершённые</button>
+      </div>
+      <div id="jobs-list" class="jobs-list" aria-live="polite"></div>
+    </section>
+
+    <section class="feature-grid" aria-label="Возможности">
+      <article class="feature">
+        <span class="feature-icon"><svg><use href="#i-download"/></svg></span>
+        <h3>Прямо и без посредников</h3>
+        <p>SoundCloud, YouTube, VK и Bandcamp скачиваются напрямую через yt-dlp или API сервиса.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-icon"><svg><use href="#i-search"/></svg></span>
+        <h3>Умный поиск аудио</h3>
+        <p>Для Яндекс Музыки, Spotify и Deezer трек находится на YouTube или SoundCloud по названию, исполнителю и длительности.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-icon"><svg><use href="#i-tag"/></svg></span>
+        <h3>Теги и обложки</h3>
+        <p>Исполнитель, альбом, год, номер трека и обложка записываются прямо в MP3, M4A, FLAC или Opus.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-icon"><svg><use href="#i-resume"/></svg></span>
+        <h3>Можно продолжить</h3>
+        <p>Готовые файлы пропускаются при повторном запуске. Загрузка идёт параллельно и не теряется при сбое.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>PLDL {{ version }} · работает локально на вашем компьютере</span>
+    <span class="footer-sep">·</span>
+    <span>Скачивайте только тот контент, который имеете право сохранять.</span>
+  </footer>
+
+  <div class="modal hidden" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="modal-backdrop" data-close-settings></div>
+    <div class="modal-card">
+      <header class="modal-head">
+        <div>
+          <h2 id="settings-title">Настройки</h2>
+          <p>Хранятся только на этом компьютере в <code>settings.json</code>.</p>
+        </div>
+        <button type="button" class="icon-btn" data-close-settings aria-label="Закрыть настройки">
+          <svg><use href="#i-x"/></svg>
+        </button>
+      </header>
+
+      <form id="settings-form" class="settings-body">
+        <section class="settings-group">
+          <h3>Загрузка</h3>
+          <label class="field">
+            <span>Папка для музыки</span>
+            <div class="field-row">
+              <input type="text" id="set-output" spellcheck="false">
+              <button type="button" class="mini-btn" id="set-output-pick"><svg><use href="#i-folder"/></svg><span>Выбрать</span></button>
+              <button type="button" class="mini-btn" id="set-output-open" title="Открыть папку"><svg><use href="#i-external"/></svg></button>
+            </div>
+          </label>
+          <div class="field-grid">
+            <label class="field">
+              <span>Формат и качество</span>
+              <select id="set-quality"></select>
+            </label>
+            <label class="field">
+              <span>Одновременных загрузок</span>
+              <select id="set-concurrency">
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+              </select>
+            </label>
+          </div>
+          <div class="check-grid">
+            <label class="check-field"><input type="checkbox" id="set-folder"><span>Отдельная папка для плейлиста</span></label>
+            <label class="check-field"><input type="checkbox" id="set-index"><span>Нумеровать треки в имени файла</span></label>
+          </div>
+          <label class="field">
+            <span>Максимум треков из одной ссылки</span>
+            <input type="number" id="set-max-tracks" min="1" max="5000" step="1">
+          </label>
+        </section>
+
+        <section class="settings-group">
+          <h3>Поиск аудио</h3>
+          <div class="field-grid">
+            <label class="field">
+              <span>Где искать аудио</span>
+              <select id="set-match-source">
+                <option value="auto">Автоматически</option>
+                <option value="youtube">Только YouTube</option>
+                <option value="soundcloud">Только SoundCloud</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Cookies из браузера</span>
+              <select id="set-cookies">
+                <option value="">Не использовать</option>
+                <option value="chrome">Chrome</option>
+                <option value="chromium">Chromium</option>
+                <option value="edge">Edge</option>
+                <option value="firefox">Firefox</option>
+                <option value="brave">Brave</option>
+                <option value="opera">Opera</option>
+                <option value="vivaldi">Vivaldi</option>
+                <option value="safari">Safari</option>
+              </select>
+            </label>
+          </div>
+          <p class="field-help">Cookies помогают, если YouTube просит подтвердить, что вы не бот. Браузер лучше закрыть перед загрузкой.</p>
+          <label class="field">
+            <span>Прокси (необязательно)</span>
+            <input type="text" id="set-proxy" placeholder="http://127.0.0.1:1080 или socks5://…" spellcheck="false">
+          </label>
+        </section>
+
+        <section class="settings-group">
+          <h3>Spotify</h3>
+          <p class="field-help">Официально Spotify недоступен в РФ. Нужен VPN/прокси или свои ключи приложения Spotify. Ключи необязательны.</p>
+          <div class="field-grid">
+            <label class="field">
+              <span>Client ID</span>
+              <input type="text" id="set-spotify-id" spellcheck="false" autocomplete="off">
+            </label>
+            <label class="field">
+              <span>Страна каталога</span>
+              <input type="text" id="set-spotify-market" maxlength="2" placeholder="US" spellcheck="false">
+            </label>
+          </div>
+          <label class="field">
+            <span>Client Secret</span>
+            <div class="field-row secret-row">
+              <input type="password" id="set-spotify-secret" autocomplete="new-password" placeholder="Не задан">
+              <button type="button" class="mini-btn danger hidden" data-secret-clear="spotify_client_secret">Очистить</button>
+            </div>
+            <small class="field-help" data-secret-hint="spotify_client_secret"></small>
+          </label>
+        </section>
+
+        <section class="settings-group">
+          <h3>VK Музыка</h3>
+          <p class="field-help">VK отдаёт музыку только по пользовательскому токену с правом <code>audio</code>. Токен отправляется только на <code>api.vk.com</code>.</p>
+          <label class="field">
+            <span>Токен VK</span>
+            <div class="field-row secret-row">
+              <input type="password" id="set-vk-token" autocomplete="new-password" placeholder="Не задан">
+              <button type="button" class="mini-btn danger hidden" data-secret-clear="vk_token">Очистить</button>
+            </div>
+            <small class="field-help" data-secret-hint="vk_token"></small>
+          </label>
+        </section>
+
+        <section class="settings-group">
+          <h3>FFmpeg</h3>
+          <label class="field">
+            <span>Путь к ffmpeg.exe или папке (необязательно)</span>
+            <div class="field-row">
+              <input type="text" id="set-ffmpeg" spellcheck="false" placeholder="Находится автоматически">
+            </div>
+            <small class="field-help" id="settings-ffmpeg-status"></small>
+          </label>
+        </section>
+
+        <div class="settings-error alert alert-error hidden" id="settings-error" role="alert">
+          <svg class="alert-icon"><use href="#i-alert"/></svg>
+          <div class="alert-body"><strong id="settings-error-message"></strong><p id="settings-error-hint" class="hidden"></p></div>
+        </div>
+
+        <footer class="modal-foot">
+          <button type="button" class="btn btn-ghost" data-close-settings>Отмена</button>
+          <button type="submit" class="btn btn-primary" id="settings-save">
+            <span class="btn-label">Сохранить</span><span class="spinner hidden" aria-hidden="true"></span>
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+  <template id="job-template">
+    <article class="job-card" data-job-id="">
+      <div class="job-head">
+        <div class="job-ident">
+          <span class="badge job-platform"></span>
+          <div class="job-headings">
+            <h3 class="job-title"></h3>
+            <p class="job-sub"></p>
+          </div>
+        </div>
+        <div class="job-percent">0%</div>
+      </div>
+      <div class="progress"><div class="progress-bar"></div></div>
+      <div class="job-meta">
+        <span class="job-status"></span>
+        <span class="job-counts"></span>
+        <span class="job-speed"></span>
+        <span class="job-eta"></span>
+        <span class="job-elapsed"></span>
+      </div>
+      <p class="job-current"></p>
+      <div class="job-actions">
+        <button type="button" class="mini-btn" data-job-action="cancel"><svg><use href="#i-stop"/></svg><span>Остановить</span></button>
+        <button type="button" class="mini-btn" data-job-action="retry"><svg><use href="#i-refresh"/></svg><span>Повторить ошибки</span></button>
+        <button type="button" class="mini-btn" data-job-action="open"><svg><use href="#i-folder"/></svg><span>Открыть папку</span></button>
+        <button type="button" class="mini-btn" data-job-action="details"><svg class="chevron"><use href="#i-chevron"/></svg><span>Подробнее</span></button>
+      </div>
+      <div class="job-details hidden">
+        <div class="job-track-list"></div>
+        <details class="job-logs">
+          <summary>Журнал загрузки</summary>
+          <pre></pre>
+        </details>
+      </div>
+    </article>
+  </template>
+
+  <template id="job-track-template">
+    <div class="job-track">
+      <span class="job-track-status"></span>
+      <span class="job-track-name"></span>
+      <span class="job-track-detail"></span>
+    </div>
+  </template>
+</body>
+</html>

@@ -1,0 +1,29 @@
+* text=auto
+
+# Source and documentation
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+LICENSE text eol=lf
+NOTICE text eol=lf
+
+# Windows scripts and Inno Setup
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.iss text eol=crlf
+
+# Binary assets
+*.bmp binary
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.exe binary

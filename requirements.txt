@@ -1,0 +1,5 @@
+yt-dlp[default]>=2026.10.21
+Flask>=3.1
+requests>=2.32
+mutagen>=1.47
+pywebview>=6.2

@@ -1,0 +1,88 @@
+name: Сообщение об ошибке
+description: Что-то не работает или работает неправильно
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо за отчёт. Пожалуйста, не прикладывайте токены, cookies,
+        пароли и приватные ссылки. Фрагменты журнала очищайте перед отправкой.
+
+  - type: input
+    id: version
+    attributes:
+      label: Версия PLDL
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: windows
+    attributes:
+      label: Windows
+      options:
+        - Windows 11
+        - Windows 10
+        - Windows 10 LTSC
+        - Другая версия
+    validations:
+      required: true
+
+  - type: dropdown
+    id: service
+    attributes:
+      label: Сервис
+      options:
+        - Яндекс Музыка
+        - SoundCloud
+        - Spotify
+        - VK Музыка
+        - Deezer
+        - YouTube / YouTube Music
+        - Bandcamp
+        - Другой сайт
+        - Несколько сервисов / не знаю
+
+  - type: textarea
+    id: what
+    attributes:
+      label: Что произошло
+      description: Опишите фактическое поведение и текст ошибки.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Шаги воспроизведения
+      placeholder: |
+        1. Открыть PLDL
+        2. Вставить ссылку ...
+        3. Нажать ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Ожидаемое поведение
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Журнал и дополнительные детали
+      description: Фрагмент pldl.log без секретов, версия FFmpeg, способ запуска.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Проверки
+      options:
+        - label: Проблема повторяется на последней версии.
+          required: true
+        - label: В отчёте нет токенов, cookies, паролей и приватных ссылок.
+          required: true

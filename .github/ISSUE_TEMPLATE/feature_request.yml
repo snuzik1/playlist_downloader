@@ -1,0 +1,53 @@
+name: Предложение
+description: Идея новой возможности или улучшения
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Опишите задачу, а не только готовое решение. Так проще понять,
+        что именно нужно улучшить.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Какую проблему это решает
+      description: Что сейчас неудобно или чего не хватает?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Предлагаемое решение
+      description: Как это могло бы работать в интерфейсе или CLI?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Альтернативы
+      description: Какие ещё варианты вы рассматривали?
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Область
+      options:
+        - Интерфейс
+        - Загрузка и форматы
+        - Поддержка нового сервиса
+        - Установщик и удаление
+        - CLI
+        - Документация
+        - Другое
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Проверки
+      options:
+        - label: Я проверил(а), что такой идеи ещё нет в открытых issue.
+          required: true

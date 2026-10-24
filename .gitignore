@@ -1,0 +1,37 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local app data and secrets
+settings.json
+*.log
+.cache/
+.pldl_tmp/
+.pldl_probe_*
+
+# Build output and release artifacts
+build/
+dist/
+/PLDL.exe
+/PLDL-Setup*.exe
+/PLDL-Uninstall.exe
+build_version.tmp
+*.spec.bak
+*.tmp
+
+# OS and editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+.vs/
+*.code-workspace
+*.suo
