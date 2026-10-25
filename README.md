@@ -140,6 +140,11 @@ winget install Gyan.FFmpeg
 .\.venv\Scripts\python.exe pldl.py --help
 ```
 
+Тесты используют стандартный `unittest`, не обращаются к сети, не требуют
+FFmpeg и работают во временной папке настроек. Покрыты API, выбор и
+именование треков, манифест/докачка, конвертация и теги во всех форматах,
+разбор ссылок платформ и обработка ошибок.
+
 ## Сборка PLDL.exe
 
 ```powershell
@@ -448,7 +453,7 @@ templates/index.html   — интерфейс
 static/                — стили и JS
 assets/pldl.ico        — иконка приложения
 assets/installer-*.bmp — оформление мастера установки
-tests/                 — unit-тесты
+tests/                 — unit/API-тесты и маленькие аудиофикстуры
 .github/workflows/     — CI и сборка релизов
 setup.bat              — установка окружения
 run.bat                — запуск из исходников

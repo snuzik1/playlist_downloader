@@ -63,6 +63,18 @@ def _playlist_id_from_url(url: str) -> tuple[str, str, str | None] | None:
             if values.get(key):
                 access_key = values[key][0]
                 break
+        if not access_key:
+            # Old share links keep the key after a slash: ?z=audio_playlist-1_2/abcdef
+            for key in ("z", "w"):
+                for value in values.get(key, []):
+                    if "/" not in value:
+                        continue
+                    maybe_key = value.rsplit("/", 1)[-1]
+                    if re.fullmatch(r"[A-Za-z0-9_-]{6,}", maybe_key):
+                        access_key = maybe_key
+                        break
+                if access_key:
+                    break
         return match.group(1), match.group(2), access_key
     parsed = urlparse(decoded)
     values = parse_qs(parsed.query)

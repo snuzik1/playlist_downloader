@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-import os
-import tempfile
 import unittest
 from pathlib import Path
 
-# Keep settings/probe files out of the repository during tests.
-_TEST_HOME = tempfile.TemporaryDirectory(prefix="pldl-tests-")
-os.environ["PLDL_HOME"] = _TEST_HOME.name
+from support import TEST_HOME
 
 from pldl.config import SETTINGS_PATH, normalize_settings, public_settings  # noqa: E402
 from pldl.models import Playlist, Track  # noqa: E402
@@ -79,7 +75,7 @@ class SettingsTests(unittest.TestCase):
     def test_normalizes_invalid_values(self) -> None:
         settings = normalize_settings(
             {
-                "output_dir": str(Path(_TEST_HOME.name) / "music"),
+                "output_dir": str(Path(TEST_HOME.name) / "music"),
                 "format": "wav",
                 "quality": 999,
                 "concurrency": 99,
@@ -104,7 +100,7 @@ class SettingsTests(unittest.TestCase):
     def test_public_settings_mask_secrets(self) -> None:
         settings = normalize_settings(
             {
-                "output_dir": str(Path(_TEST_HOME.name) / "music"),
+                "output_dir": str(Path(TEST_HOME.name) / "music"),
                 "spotify_client_secret": "secret",
                 "vk_token": "token",
             }
@@ -118,7 +114,7 @@ class SettingsTests(unittest.TestCase):
         )
 
     def test_settings_stay_in_test_home(self) -> None:
-        self.assertEqual(SETTINGS_PATH.parent, Path(_TEST_HOME.name))
+        self.assertEqual(SETTINGS_PATH.parent, Path(TEST_HOME.name))
 
 
 class ModelTests(unittest.TestCase):

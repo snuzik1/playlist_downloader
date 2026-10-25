@@ -27,3 +27,8 @@ NOTICE text eol=lf
 *.jpeg binary
 *.gif binary
 *.exe binary
+*.mp3 binary
+*.m4a binary
+*.flac binary
+*.ogg binary
+*.opus binary

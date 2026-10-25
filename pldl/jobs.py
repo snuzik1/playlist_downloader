@@ -120,8 +120,12 @@ class Job:
                     state.started_at = state.started_at or time.time()
             if progress is not None:
                 state.progress = max(0.0, min(100.0, float(progress)))
-            state.speed = speed
-            state.eta = eta
+            if state.status in {"done", "skipped", "error", "cancelled"}:
+                state.speed = None
+                state.eta = None
+            else:
+                state.speed = speed
+                state.eta = eta
             if filename:
                 state.filename = filename
             if error is not None:
